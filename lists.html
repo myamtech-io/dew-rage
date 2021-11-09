@@ -1,0 +1,40 @@
+---
+permalink: /lists
+layout: default
+---
+
+<style type="text/css" media="screen">
+  .container {
+    margin: 10px auto;
+    max-width: 600px;
+    text-align: center;
+  }
+  h1 {
+    margin: 30px 0;
+    font-size: 4em;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+</style>
+
+{% assign list_data = site.data.lists.ksk %}
+{% assign users = list_data.users %}
+<div class="container">
+    <ul>
+        {% for list in list_data.lists %}
+        <li>
+            <a href="https://github.com/{{ list.id }}">
+            {{ list.n }}
+            </a>
+            {% for user_id in list.users %}
+            {% assign id_string = user_id | append: "" %}
+            {% for found_user in users %}
+            {% if found_user.id == user_id %}
+            User: {{ found_user.n }} {{found_user.id}}<br />
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
