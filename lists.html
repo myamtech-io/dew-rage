@@ -1,40 +1,58 @@
 ---
 permalink: /lists
-layout: default
+layout: page
+title: KSK Lists
 ---
-
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
 
 {% assign list_data = site.data.lists.ksk %}
 {% assign users = list_data.users %}
-<div class="container">
-    <ul>
-        {% for list in list_data.lists %}
-        <li>
-            <a href="https://github.com/{{ list.id }}">
-            {{ list.n }}
-            </a>
-            {% for user_id in list.users %}
-            {% assign id_string = user_id | append: "" %}
+
+<nav class="list-control-nav">
+  <div class="nav nav-pills">
+    {% assign list_i = 0 %}
+    {% for list in list_data.lists %}
+      {% assign list_i = list_i | plus: 1 %}
+      {% if list_i == 1 %}
+      <button class="nav-link active" id="activator-{{ list.id }}" data-bs-toggle="tab" data-bs-target="#list-content-{{ list.id }}" type="button" role="tab">{{ list.n }}</button>
+      {% else %}
+      <button class="nav-link" id="activator-{{ list.id }}" data-bs-toggle="tab" data-bs-target="#list-content-{{ list.id }}" type="button" role="tab">{{ list.n }}</button>
+      {% endif %}
+      {% endfor %}
+  </div>
+</nav>
+
+<div class="tab-content">
+  {% assign list_i = 0 %}
+  {% for list in list_data.lists %}
+    {% assign list_i = list_i | plus: 1 %}
+    {% if list_i == 1 %}
+    <div class="tab-pane show active" id="list-content-{{ list.id }}" role="tabpanel" >
+    {% else %}
+    <div class="tab-pane show" id="list-content-{{ list.id }}" role="tabpanel" >
+    {% endif %}
+      <table class="table list-table table-dark table-hover table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+          </tr>
+        </thead>
+        {% assign list_position = 0 %}
+        <tbody>
+          {% for user_id in list.users %}
             {% for found_user in users %}
             {% if found_user.id == user_id %}
-            User: {{ found_user.n }} {{found_user.id}}<br />
+            {% assign list_position = list_position | plus: 1 %}
+            <tr class="class-{{ found_user.c }}" id="list-{{list.id}}-{{user_id}}">
+              <th scope="row">{{list_position}}</th>
+              <td><span class="colored character-name">{{ found_user.n }}<span></td>
+            </tr>
             {% endif %}
             {% endfor %}
-            {% endfor %}
-        </li>
-        {% endfor %}
-    </ul>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endfor %}
+
 </div>

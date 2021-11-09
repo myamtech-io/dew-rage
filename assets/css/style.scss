@@ -1,0 +1,111 @@
+---
+# Ensure jekyll reads this as a main file
+---
+
+$color-druid: #FF7C0A;
+$color-hunter: #AAD372;
+$color-mage: #3FC7EB;
+$color-paladin:#F48CBA;
+$color-priest: #FFFFFF;
+$color-rogue: #FFF468;
+$color-shaman: #0070DD;
+$color-warlock: #8788EE;
+$color-warrior: #C69B6D;
+
+.class-08, .class-mage {
+  &.colored, .colored {
+    color: $color-mage;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-mage;
+  }
+}
+
+.class-09, .class-warlock {
+  &.colored, .colored {
+    color: $color-warlock;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-warlock;
+  }
+}
+
+.class-07, .class-shaman {
+  &.colored, .colored {
+    color: $color-shaman;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-shaman;
+  }
+}
+
+.class-05, .class-priest {
+  &.colored, .colored {
+    color: $color-priest;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-priest;
+  }
+}
+
+.class-04, .class-rogue {
+  &.colored, .colored {
+    color: $color-rogue;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-rogue;
+  }
+}
+
+.class-02, .class-paladin {
+  &.colored, .colored {
+    color: $color-paladin;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-paladin;
+  }
+}
+
+.class-03, .class-hunter {
+  &.colored, .colored {
+    color: $color-hunter;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-hunter;
+  }
+}
+
+.class-11, .class-druid {
+  &.colored, .colored {
+    color: $color-druid;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-druid;
+  }
+}
+
+.class-01, .class-warrior {
+  &.colored, .colored {
+    color: $color-warrior;
+  }
+
+  &.background-colored, .background-colored {
+    background-color: $color-warrior;
+  }
+}
+
+.page-content {
+  padding: 20px 0;
+}
+
+.tab-content {
+  padding: 20px 0;
+}
