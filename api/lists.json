@@ -1,0 +1,4 @@
+---
+permalink: /api/lists.json
+---
+{{ site.data.lists.ksk | json | replace: "=>", ":" }}
