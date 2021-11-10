@@ -53,7 +53,9 @@ class DiscordClient extends EventEmitter {
     });
 
     this.discord.on('messageCreate', async (message) => {
-      this.logger.info({ channel: message.channel.name, }, 'Discord received a message');
+      this.logger.info({ channel: message.channel.name, author:message.author.username }, 'Discord received a message');
+      const bel = "333022869862744085";
+
       if (message.author.bot)
         return;
 
@@ -75,13 +77,16 @@ class DiscordClient extends EventEmitter {
         await message.react('866472120099667979');
       }
 
+      if (message.author.id == bel && caseInsensitiveContent.includes('ty')) {
+        await message.reply('yw');
+      }
     });
 
     this.discord.login(botToken);
   }
 
   async runKskCommand(interaction) {
-    const embed = await getEmbed();
+    const embed = await this.getEmbed();
     await interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
