@@ -1,0 +1,22 @@
+{
+  "name": "dewrage-bot",
+  "version": "0.0.1",
+  "description": "Dew rage bot for syncing lists",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Parente <stephen@myam.tech>",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "axios": "^0.24.0",
+    "bunyan": "^1.8.15",
+    "commander": "^8.3.0",
+    "discord-api-types": "^0.24.0",
+    "discord.js": "^13.3.1",
+    "nconf": "^0.11.3",
+    "text-table": "^0.2.0"
+  }
+}
