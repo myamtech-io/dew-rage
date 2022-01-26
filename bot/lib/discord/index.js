@@ -1,14 +1,21 @@
 
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { Client, Intents, MessageEmbed } = require('discord.js');
+const { Client, Intents, Permissions, MessageEmbed } = require('discord.js');
 const EventEmitter = require('events');
 const table = require('text-table');
 
 const commands = [{
   name: 'ksk',
   description: 'Gets the current KSK list'
+}, {
+  name: 'purge',
+  description: 'Purges users without a role'
 }];
+
+function isAThankYou(text) {
+  return text.includes('ty') || text.includes('thx') || text.includes('thanks') || text.includes('thank you');
+}
 
 class DiscordClient extends EventEmitter {
 
@@ -22,7 +29,12 @@ class DiscordClient extends EventEmitter {
     this.logger = logger.child({
       component: 'discord'
     });
-    this.discord = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+    this.discord = new Client({ intents: [
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MESSAGES,
+      Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+      Intents.FLAGS.GUILD_MEMBERS
+    ] });
     this.clientId = clientId;
     this.botToken = botToken;
     this.siteClient = siteClient;
@@ -45,10 +57,18 @@ class DiscordClient extends EventEmitter {
       if (!interaction.isCommand())
         return;
 
-      switch (interaction.commandName) {
-        case 'ksk':
-          await this.runKskCommand(interaction);
-          return;
+      try {
+        switch (interaction.commandName) {
+          case 'ksk':
+            await this.runKskCommand(interaction);
+            return;
+          case 'purge':
+            await this.runPurgeCommand(interaction);
+            return;
+        }
+      } catch (e) {
+        this.logger.error(e, 'Failed to run command: ' + interaction.commandName);
+        await interaction.reply({ content: e.message, ephemeral: true });
       }
     });
 
@@ -77,7 +97,10 @@ class DiscordClient extends EventEmitter {
         await message.react('866472120099667979');
       }
 
-      if (message.author.id == bel && caseInsensitiveContent.includes('ty')) {
+      if (
+        message.author.id == bel &&
+        isAThankYou(caseInsensitiveContent)
+      ) {
         await message.reply('yw');
       }
     });
@@ -87,6 +110,56 @@ class DiscordClient extends EventEmitter {
 
   async runKskCommand(interaction) {
     const embed = await this.getEmbed();
+
+    this.logger.info({ author: interaction.member.user.username }, '/ksk command has been run');
+
+    await interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+
+  async runPurgeCommand(interaction) {
+    if (!interaction.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
+      await interaction.reply({ content: 'You do not have permission', ephemeral: true });
+      return;
+    }
+
+    const maxPurgeCount = 20;
+    const embed = new MessageEmbed();
+    embed.setDescription(`Members to purge`);
+
+    this.logger.info({ author: interaction.member.user.username }, '/purge command has been run');
+
+    const guild = interaction.guild;
+    const members = await guild.members.fetch();
+
+    const usersToPurge = [];
+    const usersNotToPurge = [];
+
+    members.forEach(m => {
+      if (m._roles == null || m._roles.length === 0) {
+        usersToPurge.push({ id: m.id, name: m.user.username, m });
+        this.logger.debug('Kicking user: ' + m.user.username);
+      } else {
+        usersNotToPurge.push({ id: m.id, name: m.user.username, m });
+        this.logger.debug('Not kicking ' + m.user.username);
+      }
+    });
+
+    usersToPurge.sort(x => x.id).slice(0, maxPurgeCount);
+    const fields = [];
+    const tableColumns = [];
+
+    for (const user of usersNotToPurge.slice(0, maxPurgeCount)) {
+      tableColumns.push([ user.id, user.name ]);
+    }
+
+    fields.push({
+      name: 'Users',
+      value: '```' + table(tableColumns, { align: [ 'l', 'l' ], hsep: ' ' }) + '```',
+      inline: true
+    });
+
+    embed.addFields(...fields);
+
     await interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
